@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Link from "next/link";
+import Nav from './components/Nav';
+import { SessionProvider } from './components/Session';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,15 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <nav className="bg-white shadow-lg p-4">
-          <div className="container mx-auto flex justify-between items-center">
-            <Link href="/" className="text-xl font-bold">NextShop</Link>
-            <Link href="/cart" className="p-2 bg-blue-500 text-white rounded">
-              Cart
-            </Link>
-          </div>
-        </nav>
-        {children}
+        <SessionProvider>
+          <Nav />
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );
