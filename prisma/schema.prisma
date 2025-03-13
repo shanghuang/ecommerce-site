@@ -8,10 +8,118 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String      @id @default(cuid())
   name      String
   email     String   @unique
   password  String
+  orders      Order[]
+  cart        Cart?    
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/*
+model Order {
+  id          String   @id @default(cuid())
+  email       String
+  fullName    String
+  address     String
+  city        String
+  state       String
+  zip         String
+  country     String
+  totalAmount Float
+  status      String
+  paymentId   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}*/
+
+model Order {
+  id              String          @id @default(cuid())
+  status          String
+  total           Float
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+  orderItems      OrderItem[]
+  shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressId String
+  paymentId   String?
+  createdAt       DateTime        @default(now())
+  updatedAt   DateTime        @default(now())
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  quantity    Int
+  price       Float
+  orderId     String
+  order       Order   @relation(fields: [orderId], references: [id])
+  productId   String
+  product     Product @relation(fields: [productId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ShippingAddress {
+  id          String  @id @default(cuid())
+  fullName    String
+  address     String
+  city        String
+  state       String
+  zip         String
+  country     String
+  phone       String
+  orders      Order[]
+}
+/*
+model User {
+  id          String  @id @default(cuid())
+  email       String  @unique
+  name        String?
+  orders      Order[]
+}*/
+
+model Product {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  imageUrl    String?
+  isFeatured  Boolean   @default(false)
+  cartItems   CartItem[]
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  orderItems  OrderItem[]
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  products    Product[]
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
