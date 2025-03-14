@@ -1,128 +1,171 @@
-import { cookies } from 'next/headers';
-import Link from 'next/link';
+'use client';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-const products = [
-  {
-    id: 1,
-    name: 'Premium Headphones',
-    price: 199.99,
-    description: 'Experience superior sound quality with our noise-cancelling wireless headphones.',
-    features: [
-      'Active noise cancellation',
-      '30-hour battery life',
-      'Bluetooth 5.0 connectivity',
-      'Comfortable over-ear design',
-      'Built-in microphone'
-    ],
-    image: '/images/headphones.jpg'
-  },
-  {
-    id: 2,
-    name: 'Smart Watch',
-    price: 249.99,
-    description: 'Stay connected and track your fitness with our advanced smart watch.',
-    features: [
-      'Heart rate monitoring',
-      'GPS tracking',
-      'Water resistant up to 50m',
-      '7-day battery life',
-      'Customizable watch faces'
-    ],
-    image: '/images/smartwatch.jpg'
-  },
-  {
-    id: 3,
-    name: 'Wireless Earbuds',
-    price: 149.99,
-    description: 'Enjoy true wireless freedom with our high-quality earbuds.',
-    features: [
-      'True wireless stereo',
-      '24-hour total battery life',
-      'Touch controls',
-      'IPX5 water resistance',
-      'Compact charging case'
-    ],
-    image: '/images/earbuds.jpg'
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  category?: {
+    id: string;
+    name: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export default function ProductDetailPage() {
+  const { id } = useParams();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [cartMessage, setCartMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`/api/products/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch product');
+        }
+        const data = await response.json();
+        setProduct(data.product);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load product');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  const addToCart = async () => {
+    if (!product) return;
+
+    setAddingToCart(true);
+    setCartMessage(null);
+
+    try {
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+      const response = await fetch('/api/cart/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : '',
+        },
+        body: JSON.stringify({
+          userId: userId,
+          productId: product.id,
+          quantity: 1,
+        }),
+      });
+
+      if (response.ok) {
+        setCartMessage({
+          type: 'success',
+          text: 'Product added to cart!'
+        });
+      } else {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to add product to cart');
+      }
+    } catch (error) {
+      setCartMessage({
+        type: 'error',
+        text: error instanceof Error ? error.message : 'Failed to add to cart'
+      });
+    } finally {
+      setAddingToCart(false);
+      
+      // Clear message after 3 seconds
+      setTimeout(() => {
+        setCartMessage(null);
+      }, 3000);
+    }
+  };
+
+  if (loading) {
+    return <div className="container mx-auto p-4">Loading product details...</div>;
   }
-];
 
-export default async function ProductDetailPage({ params }: { params: { id: string } }) {
-  const {id} = await params;
-  //const product = products.find(p => p.id === Number(params.id));
-  const product = products.find(p => p.id === Number(id));
-  
-  if (!product) {
+  if (error) {
     return (
       <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
-        <Link href="/products" className="text-blue-500 hover:underline">
-          &larr; Back to Products
-        </Link>
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          {error}
+        </div>
       </div>
     );
   }
 
-  const addToCart = async () => {
-    'use server';
-    const cookieStore = await cookies()
-    const cart = cookieStore.get('cart')?.value || '[]';
-    const cartItems = JSON.parse(cart);
-    const existingItem = cartItems.find((item: any) => item.id === product.id);
-    
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      cartItems.push({ ...product, quantity: 1 });
-    }
-    
-    cookieStore.set('cart', JSON.stringify(cartItems));
-  };
+  if (!product) {
+    return <div className="container mx-auto p-4">Product not found</div>;
+  }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="container mx-auto p-4 max-w-4xl">
+      {cartMessage && (
+        <div className={`fixed top-4 right-4 p-4 rounded-lg shadow-md ${
+          cartMessage.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        } text-white`}>
+          {cartMessage.text}
+        </div>
+      )}
+      <div className="grid md:grid-cols-2 gap-8">
         {/* Product Image */}
-        <div className="bg-gray-100 rounded-lg p-8">
-          <div className="aspect-square bg-white rounded-lg">
-            {/* Image would go here */}
-          </div>
+        <div>
+          {product.imageUrl ? (
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="w-full rounded-lg shadow-lg"
+            />
+          ) : (
+            <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
+              <span className="text-gray-500">No image available</span>
+            </div>
+          )}
         </div>
 
         {/* Product Details */}
-        <div>
-          <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
-          <p className="text-2xl font-semibold text-gray-800 mb-6">
-            ${product.price.toFixed(2)}
-          </p>
+        <div className="space-y-6">
+          <h1 className="text-3xl font-bold">{product.name}</h1>
           
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-3">Description</h2>
-            <p className="text-gray-600">{product.description}</p>
+          {product.category && (
+            <div className="text-sm text-gray-600">
+              Category: <span className="font-medium">{product.category.name}</span>
+            </div>
+          )}
+
+          <div className="text-2xl font-semibold">
+            ${product.price.toFixed(2)}
           </div>
 
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-3">Features</h2>
-            <ul className="list-disc list-inside text-gray-600">
-              {product.features.map((feature, index) => (
-                <li key={index}>{feature}</li>
-              ))}
-            </ul>
+          {product.description && (
+            <div className="prose max-w-none">
+              <h3 className="text-xl font-semibold mb-2">Description</h3>
+              <p>{product.description}</p>
+            </div>
+          )}
+
+          <div className="text-sm text-gray-600 space-y-1">
+            <div>Created: {new Date(product.createdAt).toLocaleDateString()}</div>
+            <div>Last updated: {new Date(product.updatedAt).toLocaleDateString()}</div>
           </div>
 
-          <form action={addToCart}>
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
-            >
-              Add to Cart
-            </button>
-          </form>
+          <button
+            onClick={addToCart}
+            disabled={addingToCart}
+            className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors disabled:bg-blue-300"
+          >
+            {addingToCart ? 'Adding to Cart...' : 'Add to Cart'}
+          </button>
         </div>
       </div>
-
-      <Link href="/products" className="mt-8 inline-block text-blue-500 hover:underline">
-        &larr; Back to Products
-      </Link>
     </div>
   );
 }

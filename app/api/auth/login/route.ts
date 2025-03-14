@@ -6,6 +6,15 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
+export function verifyToken(token: string) {
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch (error) {
+    console.error('Token verification error:', error);
+    return null;
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const { email, password } = await request.json();
@@ -43,7 +52,7 @@ export async function POST(request: Request) {
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '10h' }
     );
 
     // 5. Return response with token

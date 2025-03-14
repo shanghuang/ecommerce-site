@@ -14,6 +14,7 @@ export default function LogoutButton() {
       });
       //localStorage.removeItem('email');
       localStorage.setItem('email', "");
+      localStorage.setItem('token', "");
       setSessionEmail('');
       router.push('/login');
     } catch (error) {

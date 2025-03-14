@@ -20,6 +20,7 @@ export default function Nav() {
         )}
         <Link href="/products" className="text-gray-700 hover:text-blue-500">Products</Link>
         <Link href="/register" className="text-gray-700 hover:text-blue-500">Register</Link>
+        <Link href="/account/orders" className="text-gray-700 hover:text-blue-500">History</Link>
         <Link href="/cart" className="p-2 bg-blue-500 text-white rounded">Cart</Link>
       </div>
     </nav>

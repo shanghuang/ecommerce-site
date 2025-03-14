@@ -27,8 +27,10 @@ export default function LoginPage() {
         const data = await response.json();
         // Store the token in localStorage or cookies
         localStorage.setItem('email', email);
+        localStorage.setItem('token', data.token);
         document.cookie = `token=${data.token}; path=/; max-age=3600; SameSite=Lax; Secure`;
         setSessionEmail(email);
+        localStorage.setItem('userId', data.user.id);
         router.push('/');
       } else {
         const data = await response.json();
