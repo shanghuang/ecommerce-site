@@ -1,6 +1,7 @@
 'use client';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface Product {
   id: string;
@@ -23,6 +24,8 @@ export default function ProductDetailPage() {
   const [error, setError] = useState('');
   const [addingToCart, setAddingToCart] = useState(false);
   const [cartMessage, setCartMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
+  const t = useTranslations('ProductDetail');
+  
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -67,7 +70,7 @@ export default function ProductDetailPage() {
       if (response.ok) {
         setCartMessage({
           type: 'success',
-          text: 'Product added to cart!'
+          text: t("productAddedToCart")
         });
       } else {
         const data = await response.json();
@@ -103,7 +106,7 @@ export default function ProductDetailPage() {
   }
 
   if (!product) {
-    return <div className="container mx-auto p-4">Product not found</div>;
+    return <div className="container mx-auto p-4">{t("productNotFound")}</div>;
   }
 
   return (
@@ -147,7 +150,7 @@ export default function ProductDetailPage() {
 
           {product.description && (
             <div className="prose max-w-none">
-              <h3 className="text-xl font-semibold mb-2">Description</h3>
+              <h3 className="text-xl font-semibold mb-2">{t("description")}</h3>
               <p>{product.description}</p>
             </div>
           )}
@@ -162,7 +165,7 @@ export default function ProductDetailPage() {
             disabled={addingToCart}
             className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors disabled:bg-blue-300"
           >
-            {addingToCart ? 'Adding to Cart...' : 'Add to Cart'}
+            {addingToCart ? t("addingToCart") : t("addToCart")}
           </button>
         </div>
       </div>

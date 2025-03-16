@@ -1,0 +1,16 @@
+{
+  "OrderHistory": {
+    "title": "Order History",
+    "noOrders": "You haven't placed any orders yet.",
+    "browseProducts": "Browse Products",
+    "orderNumber": "Order #{number}",
+    "status": "Status",
+    "items": "Items",
+    "viewDetails": "View Details →",
+    "statuses": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "cancelled": "Cancelled"
+    }
+  }
+}

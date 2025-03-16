@@ -1,4 +1,8 @@
+'use client';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+
 
 interface Product {
   id: string;
@@ -27,15 +31,25 @@ async function getFeaturedProducts(): Promise<Product[]> {
   }
 }
 
-export default async function Home() {
-  const featuredProducts = await getFeaturedProducts();
-    
+export default function Home() {
+
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const t = useTranslations('Home');
+
+  useEffect(() => {
+    async function fetchProducts() {
+      const products = await getFeaturedProducts();
+      setFeaturedProducts(products);
+    }
+    fetchProducts();
+  }, []);
+
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-8">Welcome to NextShop</h1>
+      <h1 className="text-3xl font-bold mb-8">{t("welcomeToNextShop")}</h1>
       
       <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-6">Featured Products</h2>
+        <h2 className="text-2xl font-semibold mb-6">{t("featuredProducts")}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {featuredProducts.map(product => (
             <div key={product.id} className="border p-4 rounded-lg shadow-sm">
@@ -61,7 +75,7 @@ export default async function Home() {
                 href={`/products/${product.id}`}
                 className="block text-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
               >
-                View Product
+                {t("viewProducts")}
               </Link>
             </div>
           ))}
@@ -73,6 +87,10 @@ export default async function Home() {
   );
 }
 
+
+/*function useState<T>(arg0: never[]): [any, any] {
+  throw new Error('Function not implemented.');
+}*/
 /*import Link from 'next/link';
 
 const featuredProducts = [

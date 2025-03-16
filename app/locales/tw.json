@@ -1,0 +1,138 @@
+{
+    "Nav":{
+        "home": "首頁",
+        "products": "商品",
+        "cart": "購物車",
+        "orderHistory": "訂單記錄",
+        "login": "登入",
+        "logout": "登出",
+        "history": "歷史",
+        "register": "註冊",
+        "welcome": "歡迎"
+    },
+    "Home": {
+      "title": "歡迎來到我們的商店",
+      "subtitle": "我們提供最好的產品",
+      "browseProducts": "瀏覽商品",
+      "welcomeToNextShop": "歡迎來到 Next Shop",
+      "featuredProducts": "特色商品",
+      "viewProducts": "查看商品"
+    },
+    "ProductList": {
+      "title": "商品",
+      "noProducts": "沒有商品.",
+      "addToCart": "加入購物車"
+    },
+    "ProductDetail": {
+      "productNotFound": "商品未找到",
+      "description": "描述",
+      "title": "商品明細",
+      "backToProducts": "返回商品",
+      "addToCart": "加入購物車",
+      "addingToCart": "加入購物車中...",
+      "productAddedToCart": "商品已加入購物車"
+    },
+    "Cart": {
+        "quantity": "數量",
+        "price": "價格",
+      "yourCart": "購物車",
+      "yourCartIsEmpty": "購物車是空的.",
+      "checkout": "結帳",
+      "total": "總計",
+      "proceedToCheckout": "前往結帳",
+      "continueShopping": "繼續購物",
+      "remove": "移除"
+    },
+    "OrderHistory": {
+      "title": "標題",
+      "noOrders": "沒有訂單.",
+      "browseProducts": "瀏覽商品",
+      "orderNumber": "訂單號碼",
+      "status": "狀態",
+      "items": "項目",
+      "viewDetails": "明細",
+      "statuses": {
+        "paid": "已付款",
+        "pending": "未付款",
+        "cancelled": "取消"
+      }
+    },
+    "Login": {
+      "title": "登入",
+      "email": "電子郵件",
+      "password": "密碼",
+      "login": "登入",
+      "register": "註冊",
+      "forgotPassword": "忘記密碼",
+      "dontHaveAnAccount": "沒有帳戶？",
+      "registerHere": "前往註冊",
+      "createAccount": "建立帳戶"
+    },
+    "Register": {
+        "nameIsRequired": "名字是必填的",
+        "emailIsRequired": "電子郵件是必填的",
+        "emailAddressIsInvalid": "電子郵件地址無效",
+        "passwordMustBeAtLeast6Characters": "密碼必須至少6個字符",
+        "registrationFailed": "註冊失敗",
+        "createAnAccount": "建立帳戶",
+        "name": "名字",
+      "title": "註冊",
+      "email": "電子郵件",
+      "password": "密碼",
+      "confirmPassword": "確認密碼",
+      "register": "註冊",
+      "login": "登入",
+      "alreadyHaveAccount?": "已經有帳戶？",
+      "loginHere": "在這裡登入"
+    },
+    "Checkout": {
+      "title": "結帳",
+      "shippingAddress": "送貨地址",
+      "firstName": "名字",
+      "lastName": "姓氏",
+      "address": "地址",
+      "city": "城市",
+      "country": "國家",
+      "zip": "郵遞區號",
+      "shipping": "運費",
+      "payment": "付款",
+      "payWithCard": "信用卡付款",
+      "pay": "付款",
+      "completeOrder": "完成訂單",
+      "subtotal": "小計",
+      "total": "總計",
+      "billingAddress": "帳單地址",
+      "sameAsShipping": "同送貨地址",
+      "creditCard": "信用卡",
+      "cardNumber": "卡號",
+      "expirationDate": "到期日",
+      "cvv": "CVV",
+      "save": "儲存",
+      "processingPayment": "付款處理中...",
+      "paymentSuccess": "付款成功",
+      "paymentError": "付款失敗"
+    },
+    "OrderConfirmation": {
+      "title": "訂單確認",
+      "thankYou": "謝謝您的訂購！",
+      "orderConfirmation": "訂單確認",
+      "orderNumber": "訂單號碼",
+      "shippingAddress": "送貨地址",
+      "billingAddress": "帳單地址",
+      "shipping": "運費",
+      "payment": "付款",
+      "items": "項目",
+      "subtotal": "小計",
+      "total": "總計",
+      "continueShopping": "繼續購物"
+    },
+    "Error": {
+      "title": "錯誤",
+      "notFound": "找不到頁面",
+      "notFoundMessage": "抱歉，找不到您要找的頁面。",
+      "backToHome": "返回首頁",
+      "unexpected": "意外錯誤",
+      "unexpectedMessage": "抱歉，發生了一些意外錯誤。",
+      "contactSupport": "請聯絡支援"
+    }
+  }

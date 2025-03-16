@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -13,19 +14,20 @@ export default function RegisterPage() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations('Register');
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name) newErrors.name = 'Name is required';
+    if (!formData.name) newErrors.name = t("nameIsRequired");
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t("emailIsRequired");
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email address is invalid';
+      newErrors.email = t("emailAddressIsInvalid");
     }
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = t("passwordMustBeAtLeast6Characters");
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -49,7 +51,7 @@ export default function RegisterPage() {
         router.push('/'); // Redirect after successful registration
       } else {
         const errorData = await response.json();
-        setErrors({ form: errorData.message || 'Registration failed' });
+        setErrors({ form: errorData.message || t("registrationFailed") });
       }
     } catch (error) {
       setErrors({ form: 'An unexpected error occurred' });
@@ -67,7 +69,7 @@ export default function RegisterPage() {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6">Create an Account</h1>
+      <h1 className="text-2xl font-bold mb-6">{t("createAnAccount")}</h1>
       {errors.form && (
         <div className="mb-4 p-2 bg-red-100 text-red-600 rounded">
           {errors.form}
@@ -75,7 +77,7 @@ export default function RegisterPage() {
       )}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="name" className="block mb-1">Name</label>
+          <label htmlFor="name" className="block mb-1">{t("name")}</label>
           <input
             type="text"
             id="name"
@@ -92,7 +94,7 @@ export default function RegisterPage() {
           )}
         </div>
         <div>
-          <label htmlFor="email" className="block mb-1">Email</label>
+          <label htmlFor="email" className="block mb-1">{t("email")}</label>
           <input
             type="email"
             id="email"
@@ -109,7 +111,7 @@ export default function RegisterPage() {
           )}
         </div>
         <div>
-          <label htmlFor="password" className="block mb-1">Password</label>
+          <label htmlFor="password" className="block mb-1">{t("password")}</label>
           <input
             type="password"
             id="password"
@@ -130,14 +132,14 @@ export default function RegisterPage() {
           disabled={isSubmitting}
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
         >
-          {isSubmitting ? 'Registering...' : 'Register'}
+          {isSubmitting ? t("register")+"..." : t("register")}
         </button>
       </form>
       <div className="mt-4 text-center">
         <p className="text-gray-600">
-          Already have an account?{' '}
+          {t("alreadyHaveAccount?")}{' '}
           <Link href="/login" className="text-blue-500 hover:underline">
-            Login here
+          {t("loginHere")}
           </Link>
         </p>
       </div>

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from '../components/Session';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -10,6 +11,8 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const router = useRouter();
   const { setSessionEmail } = useSession();
+  const t = useTranslations('Login');
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -43,11 +46,11 @@ export default function LoginPage() {
 
   return (
     <div className="container mx-auto p-4 max-w-md">
-      <h1 className="text-2xl font-bold mb-6">Login</h1>
+      <h1 className="text-2xl font-bold mb-6">{t("login")}</h1>
       {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="email" className="block mb-2">Email</label>
+          <label htmlFor="email" className="block mb-2">{t("email")}</label>
           <input
             type="email"
             id="email"
@@ -58,7 +61,7 @@ export default function LoginPage() {
           />
         </div>
         <div>
-          <label htmlFor="password" className="block mb-2">Password</label>
+          <label htmlFor="password" className="block mb-2">{t("password")}</label>
           <input
             type="password"
             id="password"
@@ -72,13 +75,13 @@ export default function LoginPage() {
           type="submit"
           className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
-          Login
+          {t("login")}
         </button>
       </form>
       <div className="mt-4 text-center">
-        <span className="text-gray-600">Don't have an account? </span>
+        <span className="text-gray-600">{t("dontHaveAnAccount")}</span>
         <Link href="/register" className="text-blue-500 hover:underline">
-          Register here
+        {t("registerHere")}
         </Link>
       </div>
     </div>
