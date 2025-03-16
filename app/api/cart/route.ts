@@ -6,10 +6,14 @@ import { verifyToken } from '../auth/login/route';
 const prisma = new PrismaClient();
 
 export async function GET() {
+
   try {
     const headersList = await headers();
+    //console.log("headersList: "); console.log(headersList);
     const authToken = headersList.get('authorization')?.split(' ')[1];
     
+    console.log("authToken: "); console.log(authToken);
+
     if (!authToken) {
       return NextResponse.json(
         { message: 'Authentication required' },
@@ -18,12 +22,16 @@ export async function GET() {
     }
 
     const decoded = verifyToken(authToken);
+    //console.log("decoded: "); console.log(decoded);
+
     if (!decoded?.userId) {
       return NextResponse.json(
         { message: 'Invalid authentication token' },
         { status: 401 }
       );
     }
+
+    //console.log("user id:" + decoded?.userId);
 
     const cart = await prisma.cart.findUnique({
       where: { userId: decoded.userId },
@@ -35,6 +43,8 @@ export async function GET() {
         },
       },
     });
+
+    console.log("cart:" ); console.log(cart);
 
     if (!cart) {
       return NextResponse.json({ items: [] });
