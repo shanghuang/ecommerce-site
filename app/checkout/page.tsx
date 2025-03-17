@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from '../components/Session';
+import { useTranslations } from 'next-intl';
 
 export default function CheckoutPage() {
   const { email } = useSession();
@@ -29,7 +30,7 @@ export default function CheckoutPage() {
 
   const [error, setError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-
+  const t = useTranslations('Checkout');
 
   // Fetch cart items on component mount
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function CheckoutPage() {
           throw new Error('Not authenticated');
         }
 
-        const response = await fetch('/api/cart', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -117,7 +118,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-2xl font-bold mb-6">Checkout</h1>
+      <h1 className="text-2xl font-bold mb-6">{t("checkout")}</h1>
       
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -128,9 +129,9 @@ export default function CheckoutPage() {
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Shipping Information */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Shipping Information</h2>
+          <h2 className="text-xl font-semibold">{t("shippingInformation")}</h2>
           <div>
-            <label htmlFor="fullName" className="block mb-2">Full Name</label>
+            <label htmlFor="fullName" className="block mb-2">{t("fullName")}</label>
             <input
               type="text"
               id="fullName"
@@ -141,7 +142,7 @@ export default function CheckoutPage() {
             />
           </div>
           <div>
-            <label htmlFor="address" className="block mb-2">Address</label>
+            <label htmlFor="address" className="block mb-2">{t("address")}</label>
             <input
               type="text"
               id="address"
@@ -152,7 +153,7 @@ export default function CheckoutPage() {
             />
           </div>
           <div>
-            <label htmlFor="address2" className="block mb-2">Address Line 2 (Optional)</label>
+            <label htmlFor="address2" className="block mb-2">{t("addressLine2Optional")}</label>
             <input
               type="text"
               id="address2"
@@ -163,7 +164,7 @@ export default function CheckoutPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="city" className="block mb-2">City</label>
+              <label htmlFor="city" className="block mb-2">{t("city")}</label>
               <input
                 type="text"
                 id="city"
@@ -174,7 +175,7 @@ export default function CheckoutPage() {
               />
             </div>
             <div>
-              <label htmlFor="state" className="block mb-2">State/Province</label>
+              <label htmlFor="state" className="block mb-2">{t("stateProvince")}</label>
               <input
                 type="text"
                 id="state"
@@ -187,7 +188,7 @@ export default function CheckoutPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="zip" className="block mb-2">ZIP/Postal Code</label>
+              <label htmlFor="zip" className="block mb-2">{t("ZIPPostalCode")}</label>
               <input
                 type="text"
                 id="zip"
@@ -198,7 +199,7 @@ export default function CheckoutPage() {
               />
             </div>
             <div>
-              <label htmlFor="country" className="block mb-2">Country</label>
+              <label htmlFor="country" className="block mb-2">{t("country")}</label>
               <select
                 id="country"
                 value={shippingInfo.country}

@@ -51,12 +51,15 @@ export async function GET() {
     }
 
     const items = cart.items.map(item => ({
+      id: item.id,
       productId: item.productId,
       quantity: item.quantity,
       price: item.product.price,
       name: item.product.name,
       imageUrl: item.product.imageUrl,
     }));
+
+    console.log("items:" ); console.log(items);
 
     return NextResponse.json({ items });
   } catch (error) {

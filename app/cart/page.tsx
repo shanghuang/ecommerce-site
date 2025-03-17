@@ -17,6 +17,7 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Fetch cart data on component mount
   useEffect(() => {
     const fetchCartData = async () => {
       try {
@@ -37,9 +38,8 @@ export default function CartPage() {
         }
 
         const data = await response.json();
-        console.log("cart data:");  console.log(data);
         setCartItems(data.items || []);
-        //setTotal(data.cartItems.reduce((sum: number, item: CartItem) => sum + item.price * item.quantity, 0));
+        calculateTotal(data.items || []);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load cart');
       } finally {
@@ -49,6 +49,79 @@ export default function CartPage() {
 
     fetchCartData();
   }, []);
+
+  // Calculate the total price
+  const calculateTotal = (items: CartItem[]) => {
+    const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    setTotal(total);
+  };
+
+  // Update the quantity of a cart item
+  const updateQuantity = async (itemId: string, newQuantity: number) => {
+    if (newQuantity < 1) return; // Ensure quantity is at least 1
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('User not authenticated');
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          itemId,
+          quantity: newQuantity,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update cart');
+      }
+
+      // Update the local state
+      const updatedItems = cartItems.map((item) =>
+        item.id === itemId ? { ...item, quantity: newQuantity } : item
+      );
+      setCartItems(updatedItems);
+      calculateTotal(updatedItems);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update cart');
+    }
+  };
+
+  // Remove an item from the cart
+  const removeItem = async (itemId: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('User not authenticated');
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/remove`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ itemId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to remove item from cart');
+      }
+
+      // Update the local state
+      const updatedItems = cartItems.filter((item) => item.id !== itemId);
+      setCartItems(updatedItems);
+      calculateTotal(updatedItems);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to remove item');
+    }
+  };
 
   if (loading) {
     return <div className="container mx-auto p-4">Loading cart...</div>;
@@ -77,11 +150,37 @@ export default function CartPage() {
               <div key={item.id} className="border p-4 rounded-lg">
                 <h2 className="text-xl font-semibold">{item.name}</h2>
                 <p>
-                  {t('quantity')}: {item.quantity}
+                  {t('price')}: ${item.price.toFixed(2)}
                 </p>
-                <p>
-                  {t('price')}: ${(item.price * item.quantity).toFixed(2)}
-                </p>
+                <div className="flex items-center gap-2 mt-2">
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      updateQuantity(item.id, parseInt(e.target.value))
+                    }
+                    className="w-16 px-2 py-1 border rounded text-center"
+                    min="1"
+                  />
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                  >
+                    +
+                  </button>
+                </div>
+                <button
+                  onClick={() => removeItem(item.id)}
+                  className="mt-2 text-sm text-red-500 hover:text-red-700"
+                >
+                  {t('remove')}
+                </button>
               </div>
             ))}
           </div>
