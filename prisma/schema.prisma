@@ -15,6 +15,7 @@ model User {
   orders      Order[]
   cart        Cart?    
 
+  sellingProducts  Product[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -94,6 +95,9 @@ model Product {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
+  provider    User      @relation(fields: [providerId], references: [id])
+  providerId  String
+
   orderItems  OrderItem[]
 }
 
@@ -124,4 +128,5 @@ model CartItem {
   updatedAt DateTime @updatedAt
 }
 
+//npx prisma generate 
 //npx prisma migrate dev --name init

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { PrismaClient } from '@prisma/client';
+import { verifyToken } from '../auth/login/route';
 
 const prisma = new PrismaClient();
 
@@ -13,6 +14,14 @@ export async function POST(request: Request) {
     if (!authToken) {
       return NextResponse.json(
         { message: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const decoded = verifyToken(authToken);
+    if (!decoded?.userId) {
+      return NextResponse.json(
+        { message: 'Invalid authentication token' },
         { status: 401 }
       );
     }
@@ -35,6 +44,9 @@ export async function POST(request: Request) {
         description: description || null,
         price,
         imageUrl: imageUrl || null,
+        provider: {
+          connect: { id: decoded.userId }
+        },
         category: categoryId ? {
           connect: { id: categoryId }
         } : undefined,
