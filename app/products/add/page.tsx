@@ -33,6 +33,9 @@ export default function AddProductPage() {
         throw new Error('Not authenticated');
       }
 
+
+      const providerEmail = localStorage.getItem('email');
+
       const response = await fetch('/api/products', {
         method: 'POST',
         headers: {
@@ -41,6 +44,7 @@ export default function AddProductPage() {
         },
         body: JSON.stringify({
           ...formData,
+          providerEmail,
           price: parseFloat(formData.price)
         }),
       });

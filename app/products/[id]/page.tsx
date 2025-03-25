@@ -2,6 +2,7 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { ProductChat } from '../../components/ProductChat';
 
 interface Product {
   id: string;
@@ -9,6 +10,7 @@ interface Product {
   description: string;
   price: number;
   imageUrl: string;
+  providerEmail: string;
   category?: {
     id: string;
     name: string;
@@ -158,6 +160,7 @@ export default function ProductDetailPage() {
           <div className="text-sm text-gray-600 space-y-1">
             <div>Created: {new Date(product.createdAt).toLocaleDateString()}</div>
             <div>Last updated: {new Date(product.updatedAt).toLocaleDateString()}</div>
+            <div>Provider: {product.providerEmail}</div>
           </div>
 
           <button
@@ -167,6 +170,8 @@ export default function ProductDetailPage() {
           >
             {addingToCart ? t("addingToCart") : t("addToCart")}
           </button>
+          {/* Chat Section */}
+          <ProductChat productId={product.id} providerEmail={product.providerEmail} />
         </div>
       </div>
     </div>

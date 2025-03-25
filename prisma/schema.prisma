@@ -97,7 +97,7 @@ model Product {
 
   provider    User      @relation(fields: [providerId], references: [id])
   providerId  String
-
+  providerEmail String
   orderItems  OrderItem[]
 }
 

@@ -27,7 +27,8 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { name, description, price, imageUrl, categoryId } = body;
+
+    const { name, description, price, imageUrl, providerEmail, categoryId } = body;
 
     // Validate required fields
     if (!name || !price) {
@@ -43,6 +44,7 @@ export async function POST(request: Request) {
         name,
         description: description || null,
         price,
+        providerEmail,
         imageUrl: imageUrl || null,
         provider: {
           connect: { id: decoded.userId }
