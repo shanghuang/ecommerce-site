@@ -1,6 +1,8 @@
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
+import Message from './serverLib/models/message.mjs';
+import dbConnect from './serverLib/mongodb.mjs'; 
 
 const connectedUsersByEmail = new Map();
 const connectedUsersBySocket = new Map();
@@ -12,17 +14,18 @@ const port = 3000;
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
-app.prepare().then(() => {
+app.prepare().then(async () => {
   const httpServer = createServer(handler);
 
+  await dbConnect();
   const io = new Server(httpServer);
 
   io.on("connection", (socket) => {
     console.log('A user connected:', socket.id);
 
-    socket.onAny((eventName, ...args) => {
+    /*socket.onAny((eventName, ...args) => {
       console.log(`Event: ${eventName}, Args: ${args}`);
-    });
+    });*/
 
     socket.on('join_product_room', (productId) => {
       socket.join(`product_${productId}`);
@@ -51,7 +54,7 @@ app.prepare().then(() => {
     });
 
       //socket.on('send_message', ({ productId, senderId, message }) => {
-      socket.on('send_message', (param) => {
+      socket.on('send_message', async (param) => {
         console.log('param:', param);
         const { productId, receiverEmail, message } = JSON.parse(param);
         console.log(`User ${socket.id} send_message ${message}`);
@@ -64,12 +67,31 @@ app.prepare().then(() => {
         console.log(`peerInfo: ${peerInfo}`);console.log(peerInfo);
         const myInfo = connectedUsersBySocket.get(socket.id);
         console.log(`User ${socket.id} send_message ${message} to ${peerInfo.socketId}`);
-        io.to(peerInfo.socketId).emit('receive_message', {
-          email : myInfo.email,
-          productId: productId,
-          message,
-          timestamp: new Date(),
-        });
+        
+
+        try {
+          console.log('Saving message:', message);
+          // Save message to database
+          const newMessage = new Message({
+            productId,
+            senderEmail: myInfo.email,
+            receiverEmail, 
+            message
+          });
+          await newMessage.save();
+
+          console.log('Saving message2:', message);
+          io.to(peerInfo.socketId).emit('receive_message', {
+            email : myInfo.email,
+            productId: productId,
+            message,
+            messageId: newMessage._id.toString(),
+            timestamp: new Date(),
+          });
+          console.log('messageId:', newMessage._id.toString());
+        } catch (err) {
+          console.error('Error saving message:', err);
+        }
       });
 
       socket.on('disconnect', () => {

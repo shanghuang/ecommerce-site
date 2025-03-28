@@ -1,39 +1,65 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSocketClient } from '../../hooks/useSocket';
+import { useCallback } from 'react';
 
 export default function ProviderChatPage() {
   const [messages, setMessages] = useState<Array<{ sender: string, text: string, timestamp: string }>>([]);
   const [inputMessage, setInputMessage] = useState('');
-  const [productId, setProductId] = useState(''); // The product being discussed
+  const [productId, setProductId] = useState('all'); // The product being discussed
   const { isConnected, registerUser, joinProductRoom, sendMessage, onReceiveMessage } = useSocketClient();
+  const [peerCustomerEmail, setPeerCustomerEmail] = useState('customer-id');
+  //const [latestMessageId, setLatestMessageId] = useState('');
+  const latestMessageId = useRef('');
 
-  // Register provider when component mounts
+  const onReceiveMessageHandler = useCallback((message) => {
+    //const parsedMessage = JSON.parse(message);
+    console.log("ProviderChatPage::onReceiveMessage::message:"+message.message);
+    console.log("message._id:"+message.messageId+"::latestMessageId:"+latestMessageId);
+    if( message.messageId !== latestMessageId.current){
+      setMessages(prev => [...prev, {
+        sender: message.email,
+        text: message.message,
+        timestamp: new Date().toLocaleTimeString()
+      }]);
+      latestMessageId.current = message.messageId;
+      console.log("set latest message id:"+message.messageId);
+    }
+    
+    if(message.email !== peerCustomerEmail){
+      setPeerCustomerEmail(message.email);
+    }
+  }, [latestMessageId, peerCustomerEmail]);
+
+  
+  // Handle incoming messages
   useEffect(() => {
+    console.log("ProviderChatPage::useEffect");
     const email = localStorage.getItem('email');
     const username = "user";//localStorage.getItem('username');
     const userId = localStorage.getItem('userId');
     registerUser(email!, 'Provider', userId!);
-  }, [registerUser]);
+    onReceiveMessage(onReceiveMessageHandler);
 
-  // Handle incoming messages
-  useEffect(() => {
-    onReceiveMessage((message) => {
-      const parsedMessage = JSON.parse(message);
-      setMessages(prev => [...prev, {
-        sender: parsedMessage.senderEmail,
-        text: parsedMessage.message,
-        timestamp: new Date().toLocaleTimeString()
-      }]);
-    });
-  }, [onReceiveMessage]);
+    return () => {
+      // Clean up the event handler
+      onReceiveMessage(() => {});
+    }
+  }, [ onReceiveMessage,registerUser, onReceiveMessageHandler]);
 
   const handleSendMessage = () => {
     if (inputMessage.trim() && productId) {
-      sendMessage(productId, 'provider-id', inputMessage);
+      sendMessage(productId, peerCustomerEmail, inputMessage);
+      setMessages(prev => [...prev, {
+        sender: 'You',
+        text: inputMessage,
+        timestamp: new Date().toLocaleTimeString()
+      }]);      
       setInputMessage('');
     }
   };
+
+  
 
   return (
     <div className="flex flex-col h-screen p-4">
