@@ -10,7 +10,7 @@ interface ProductChatProps {
 export const ProductChat = ({ productId, providerEmail }: ProductChatProps) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Array<{ sender: string; message: string }>>([]);
-  const { sendMessage, onReceiveMessage, registerUser } = useSocketClient();
+  const { sendMessage, onReceiveMessage, registerUser, onReceivePreviousMessage } = useSocketClient();
   //const [latestMessageId, setLatestMessageId] = useState('');
   const latestMessageId = useRef('');
 
@@ -23,18 +23,17 @@ export const ProductChat = ({ productId, providerEmail }: ProductChatProps) => {
   };
 
   useEffect(() => {
-    
-    console.log("ProductChat::useEffect");
-    const email = localStorage.getItem('email');
-    const username = "user";//localStorage.getItem('username');
-    const userId = localStorage.getItem('userId');
-    registerUser(email!, username!, userId!);
+      console.log("ProductChat::useEffect");
+      const email = localStorage.getItem('email');
+      const username = "user";//localStorage.getItem('username');
+      const userId = localStorage.getItem('userId');
+      registerUser(email!, username!, userId!);
 
-    return () => {
-      onReceiveMessage(() => {});
-    };
-  }
-    , [registerUser, onReceiveMessage]);
+      return () => {
+        onReceiveMessage(() => {});
+      };
+    }, [registerUser, onReceiveMessage]
+  );
 
   onReceiveMessage((receivedMessage: any) => {
 
@@ -52,6 +51,19 @@ export const ProductChat = ({ productId, providerEmail }: ProductChatProps) => {
       //}
     });
   
+  onReceivePreviousMessage((receivedMessages: any) => {
+
+    console.log("receivedMessages:");console.log(receivedMessages);
+    let previousMessages: any[] = [];
+    receivedMessages.forEach(message => {
+      previousMessages.push({
+        sender: message.email,
+        message: message.message, 
+      });
+    });
+    
+    setMessages((prev) => previousMessages.concat(prev));
+  });
 
   return (
     <div className="mt-6 border-t pt-6">

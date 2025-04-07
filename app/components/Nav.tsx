@@ -28,17 +28,14 @@ export default function Nav() {
             </button>
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
-                <Link
-                  href="/account/products"
-                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                >
+                <Link href="/account/products" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">
                   {t("products")}
                 </Link>
-                <Link
-                  href="/account/orders"
-                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                >
+                <Link href="/account/orders" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">
                   {t("history")}
+                </Link>
+                <Link href="/provider/chat" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                  Provider Chat
                 </Link>
               </div>
             )}

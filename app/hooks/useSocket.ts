@@ -34,11 +34,17 @@ export const useSocketClient = () => {
     }
   };
 
+  const onReceivePreviousMessage = (callback: (messages: any) => void) => {
+    if (socket) {
+      socket.on('previous messages', callback);
+    }
+  };
   return {
     isConnected,
     registerUser,
     joinProductRoom,
     sendMessage,
     onReceiveMessage,
+    onReceivePreviousMessage,
   };
 };
