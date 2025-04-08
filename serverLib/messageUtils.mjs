@@ -30,13 +30,14 @@ export async function getMessagesForPair(
 async function getMessagesForPair(
   senderEmail,
   receiverEmail,
+  before,
   limit,
   skip
 ){
   try {
     limit = limit || 20;
     skip = skip || 0;
-    console.log(`getMessagesForPair: senderEmail=${senderEmail}, receiverEmail=${receiverEmail}, limit=${limit}, skip=${skip}`);
+    console.log(`getMessagesForPair: senderEmail=${senderEmail}, receiverEmail=${receiverEmail}, limit=${limit}, before=${before}`);
     const messages = await Message.find({
       $or: [
         {
@@ -47,7 +48,8 @@ async function getMessagesForPair(
           senderEmail: receiverEmail,
           receiverEmail: senderEmail
         }
-      ]
+      ],
+      "timestamp": {$lt: new Date(before) }
     })
     .sort({ timestamp: -1 })
     .skip(skip)

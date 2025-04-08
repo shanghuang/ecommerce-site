@@ -16,13 +16,14 @@ export async function GET(request: Request) {
   const myEmail = decoded?.email;
   const { searchParams } = new URL(request.url);
   const buyerEmail = searchParams.get('buyerEmail');
+  const before = searchParams.get('before') || Date.now();
   
   if (!buyerEmail) {
     return NextResponse.json({ error: 'Buyer Email is required' }, { status: 400 });
   }
 
   try {
-    const messages = await getMessagesForPair(buyerEmail, myEmail);
+    const messages = await getMessagesForPair(buyerEmail, myEmail, before);
     return NextResponse.json({ messages });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch messages' }, { status: 500 });
