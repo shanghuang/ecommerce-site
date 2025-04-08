@@ -9,7 +9,7 @@ interface ProductChatProps {
 
 export const ProductChat = ({ productId, providerEmail }: ProductChatProps) => {
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<Array<{ sender: string; message: string }>>([]);
+  const [messages, setMessages] = useState<Array<{ sender: string; content: string }>>([]);
   const { sendMessage, onReceiveMessage, registerUser, onReceivePreviousMessage } = useSocketClient();
   //const [latestMessageId, setLatestMessageId] = useState('');
   const latestMessageId = useRef('');
@@ -21,6 +21,27 @@ export const ProductChat = ({ productId, providerEmail }: ProductChatProps) => {
       setMessage('');
     }
   };
+
+  
+  useEffect(() => {
+    const fetchMessages = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Not authenticated');
+      }
+      const response = await fetch(`/api/messages?buyerEmail=${providerEmail}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            }
+          });
+      const data = await response.json();
+      console.log('Fetched messages:', data);
+      setMessages(data.messages);
+    }
+    fetchMessages();
+  }, [productId, providerEmail]);
+
 
   useEffect(() => {
       console.log("ProductChat::useEffect");
@@ -43,7 +64,7 @@ export const ProductChat = ({ productId, providerEmail }: ProductChatProps) => {
       //if (receivedMessage.senderId !== 'buyer') {
         setMessages((prev) => [
           ...prev,
-          { sender: receivedMessage.email , message: receivedMessage.message },
+          { sender: receivedMessage.email , content: receivedMessage.message },
         ]);
         latestMessageId.current = receivedMessage.messageId;
       }
@@ -72,7 +93,7 @@ export const ProductChat = ({ productId, providerEmail }: ProductChatProps) => {
       <div className="space-y-4 max-h-64 overflow-y-auto mb-4">
         {messages.map((msg, index) => (
           <div key={index} className="p-3 rounded-lg bg-gray-80">
-            <strong>{msg.sender}:</strong> {msg.message}
+            <strong>{msg.sender}:</strong> {msg.content}
           </div>
         ))}
       </div>

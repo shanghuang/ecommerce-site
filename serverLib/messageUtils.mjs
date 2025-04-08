@@ -54,8 +54,10 @@ async function getMessagesForPair(
     .limit(limit)
     .exec();
 
+    const reversedMessages = messages.reverse();
+
     console.log(`getMessagesForPair: messages=${messages.length}`);
-    return messages.map(message => ({
+    return reversedMessages.map(message => ({
       content: message.message,
       senderEmail: message.senderEmail,
       receiverEmail: message.receiverEmail,

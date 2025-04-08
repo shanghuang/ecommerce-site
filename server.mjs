@@ -89,8 +89,8 @@ app.prepare().then(async () => {
       console.log(`peerInfo: ${peerInfo}`);console.log(peerInfo);
       const myInfo = connectedUsersBySocket.get(socket.id);
       //console.log(`User ${socket.id} send_message ${message} to ${peerInfo.socketId}`);
-      console.log(`User ${myInfo.email} send_message ${message} to ${receiverEmail}`);
-      await saveMessage(myInfo.email, receiverEmail, message);
+      //console.log(`User ${myInfo.email} send_message ${message} to ${receiverEmail}`);
+      //await saveMessage(myInfo.email, receiverEmail, message);
 
       try {
         console.log('Saving message:', message);
