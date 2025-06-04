@@ -12,5 +12,14 @@
       "pending": "Pending",
       "cancelled": "Cancelled"
     }
+  },
+
+  "Unregister":{
+      "deleteAccount": "Delete Account",
+      "confirmPassword": "Confirm Password",
+      "unregisterFailed": "Failed to delete account",
+      "areYouSure?": "Are you sure you want to delete your account?",
+      "cancel": "Cancel"
   }
+
 }

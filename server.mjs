@@ -37,6 +37,7 @@ app.prepare().then(async () => {
     // Event to register a user
     socket.on('register_user', async (param) => {
       // Store user information
+      console.log('register_user:param:', param);
       const { email, username, userId } = JSON.parse(param);
       connectedUsersByEmail.set(email, {
         socketId: socket.id,

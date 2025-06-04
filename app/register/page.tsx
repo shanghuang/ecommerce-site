@@ -48,7 +48,7 @@ export default function RegisterPage() {
       });
 
       if (response.ok) {
-        router.push('/'); // Redirect after successful registration
+        router.push('/login'); // Redirect after successful registration
       } else {
         const errorData = await response.json();
         setErrors({ form: errorData.message || t("registrationFailed") });
@@ -69,7 +69,7 @@ export default function RegisterPage() {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6">{t("createAnAccount")}</h1>
+      <h1 className="text-2xl font-bold mb-6 text-gray-900">{t("createAnAccount")}</h1>
       {errors.form && (
         <div className="mb-4 p-2 bg-red-100 text-red-600 rounded">
           {errors.form}
@@ -77,14 +77,14 @@ export default function RegisterPage() {
       )}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="name" className="block mb-1">{t("name")}</label>
+          <label htmlFor="name" className="block mb-1 text-gray-900">{t("name")}</label>
           <input
             type="text"
             id="name"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className={`w-full p-2 border rounded ${
+            className={`w-full p-2 border rounded text-gray-900 ${
               errors.name ? 'border-red-500' : ''
             }`}
             required
@@ -94,14 +94,14 @@ export default function RegisterPage() {
           )}
         </div>
         <div>
-          <label htmlFor="email" className="block mb-1">{t("email")}</label>
+          <label htmlFor="email" className="block mb-1 text-gray-900">{t("email")}</label>
           <input
             type="email"
             id="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className={`w-full p-2 border rounded ${
+            className={`w-full p-2 border rounded text-gray-900 ${
               errors.email ? 'border-red-500' : ''
             }`}
             required
@@ -111,14 +111,14 @@ export default function RegisterPage() {
           )}
         </div>
         <div>
-          <label htmlFor="password" className="block mb-1">{t("password")}</label>
+          <label htmlFor="password" className="block mb-1 text-gray-900">{t("password")}</label>
           <input
             type="password"
             id="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className={`w-full p-2 border rounded ${
+            className={`w-full p-2 border rounded text-gray-900 ${
               errors.password ? 'border-red-500' : ''
             }`}
             required
@@ -136,7 +136,7 @@ export default function RegisterPage() {
         </button>
       </form>
       <div className="mt-4 text-center">
-        <p className="text-gray-600">
+        <p className="text-gray-900">
           {t("alreadyHaveAccount?")}{' '}
           <Link href="/login" className="text-blue-500 hover:underline">
           {t("loginHere")}

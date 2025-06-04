@@ -18,24 +18,10 @@ model User {
   sellingProducts  Product[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  unregistered  Boolean
+  unregisteredAt DateTime?
 }
 
-/*
-model Order {
-  id          String   @id @default(cuid())
-  email       String
-  fullName    String
-  address     String
-  city        String
-  state       String
-  zip         String
-  country     String
-  totalAmount Float
-  status      String
-  paymentId   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}*/
 
 model Order {
   id              String          @id @default(cuid())
@@ -74,13 +60,6 @@ model ShippingAddress {
   phone       String
   orders      Order[]
 }
-/*
-model User {
-  id          String  @id @default(cuid())
-  email       String  @unique
-  name        String?
-  orders      Order[]
-}*/
 
 model Product {
   id          String    @id @default(cuid())

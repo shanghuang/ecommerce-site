@@ -7,12 +7,17 @@
     "dev:socket": "node server.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:cypress": "cypress open"
   },
   "dependencies": {
-    "@prisma/client": "^6.4.1",
+    "@aws-sdk/client-s3": "^3.787.0",
+    "@prisma/client": "^6.8.2",
     "@reduxjs/toolkit": "^2.6.0",
     "@stripe/stripe-js": "^5.7.0",
+    "aws-sdk": "^2.1692.0",
     "bcryptjs": "^3.0.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.0",
@@ -23,18 +28,22 @@
     "react-redux": "^9.2.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
-    "stripe": "^17.7.0"
+    "stripe": "^17.7.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.52.0",
     "@tailwindcss/postcss": "^4",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cypress": "^13.17.0",
+    "cypress-react-selector": "^3.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.2.0",
-    "prisma": "^6.4.1",
+    "prisma": "^6.8.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

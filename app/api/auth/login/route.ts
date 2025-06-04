@@ -19,6 +19,7 @@ export async function POST(request: Request) {
   try {
     const { email, password } = await request.json();
 
+    console.log('Login attempt:', { email, password });
     // 1. Validate input
     if (!email || !password) {
       return NextResponse.json(
@@ -38,6 +39,8 @@ export async function POST(request: Request) {
         { status: 401 }
       );
     }
+
+    console.log("user password in db: "+user.password);
 
     // 3. Compare password
     const isPasswordValid = await bcrypt.compare(password, user.password);

@@ -37,6 +37,7 @@ export default function Nav() {
                 <Link href="/provider/chat" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">
                   Provider Chat
                 </Link>
+                <Link href="/unregister" className="text-gray-700 hover:text-blue-500">{t("unregister")}</Link>
               </div>
             )}
             <LogoutButton />

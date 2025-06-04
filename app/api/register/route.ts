@@ -52,6 +52,8 @@ export async function POST(request: Request) {
         name,
         email,
         password: hashedPassword,
+        unregistered: false, // Assuming you want to set this field to false on registration
+        
       },
     });
 
